@@ -227,12 +227,83 @@ export interface Transaction {
   vipRoomFee?: number | null;
   grossTotal: number;
   voucherDiscount: number;
+  packageDiscount?: number;
+  freeVipRoomsCount?: number;
+  freeTreatmentsCount?: number;
+  usedVouchers?: Array<{
+    id?: string;
+    code?: string;
+    rewardName?: string;
+    rewardType?: string;
+    voucherValue?: number;
+    freeVipRoom?: boolean;
+    freeTreatment?: boolean;
+    discountAmount?: number;
+  }> | null;
+  usedPackages?: Array<{
+    packageId?: string;
+    customerPackageId?: string;
+    code?: string;
+    packageName?: string;
+    sessionId?: string;
+    sessionNumber?: number;
+    treatmentName?: string;
+    variantName?: string;
+    discountAmount?: number;
+  }> | null;
   netPaidAmount: number;
   pointsEarned: number;
   paymentMethod: string;
   notes?: string | null;
   cashierName?: string | null;
   createdAt: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image?: string | null;
+  phoneNumber?: string | null;
+  phoneVerified?: boolean;
+  phoneVerifiedAt?: string | null;
+  gender?: Gender | null;
+  role: 'superadmin' | 'admin' | 'user';
+  pointsBalance?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Customer extends User {
+  registeredAt?: string;
+  phone?: string;
+}
+
+export interface SystemSettings {
+  id: string;
+  csWhatsappNumber?: string | null;
+  csWhatsappName?: string | null;
+  csWhatsappGreeting?: string | null;
+  updatedBy?: string | null;
+  updatedAt?: string;
+}
+
+export interface PhoneVerificationRequest {
+  id: string;
+  userId: string;
+  userName?: string | null;
+  userEmail?: string | null;
+  phoneNumber: string;
+  verificationCode: string;
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'EXPIRED';
+  verifiedBy?: string | null;
+  verifiedByName?: string | null;
+  verifiedAt?: string | null;
+  expiresAt: string;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const DEFAULT_RATES = {
