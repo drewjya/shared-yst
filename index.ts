@@ -318,11 +318,91 @@ export const DEFAULT_RATES = {
   isEnabled: true,
 };
 
+export interface MobileFeatureFlagDefinition {
+  key: string;
+  label: string;
+  category: 'loyalty' | 'home' | 'account';
+  description: string;
+  icon: string;
+  defaultValue: boolean;
+}
+
+export const MOBILE_FEATURE_FLAGS_METADATA: MobileFeatureFlagDefinition[] = [
+  {
+    key: 'mobile_loyalty_card',
+    label: 'Kartu Saldo & Loyalty Poin',
+    category: 'loyalty',
+    description: 'Tampilkan banner saldo poin, voucher aktif, dan ringkasan paket reward di beranda mobile.',
+    icon: 'star-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_loyalty_redemption',
+    label: 'Katalog & Penukaran Reward Poin',
+    category: 'loyalty',
+    description: 'Izinkan member menukarkan poin dengan voucher potongan harga atau paket sesi layanan.',
+    icon: 'gift-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_branch_list',
+    label: 'Daftar Cabang & Pilihan Outlet',
+    category: 'home',
+    description: 'Tampilkan daftar cabang operasional, alamat, dan tombol navigasi lokasi cabang di beranda.',
+    icon: 'business-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_happy_hour',
+    label: 'Promo Happy Hour Cabang',
+    category: 'home',
+    description: 'Tampilkan badge diskon khusus Happy Hour pada outlet yang memberlakukannya.',
+    icon: 'time-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_profile_nudge',
+    label: 'Pengingat Kelengkapan Profil',
+    category: 'account',
+    description: 'Tampilkan kartu peringatan jika nomor telepon WhatsApp atau data profil member belum lengkap.',
+    icon: 'alert-circle-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_support_link',
+    label: 'Bantuan Kontak CS WhatsApp',
+    category: 'account',
+    description: 'Sediakan tombol bantuan customer service resmi langsung ke WhatsApp di profil dan bantuan.',
+    icon: 'logo-whatsapp',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_dark_mode',
+    label: 'Opsi Mode Gelap Mobile',
+    category: 'account',
+    description: 'Berikan pilihan tema mode gelap di pengaturan profil aplikasi mobile pelanggan.',
+    icon: 'moon-outline',
+    defaultValue: true,
+  },
+  {
+    key: 'mobile_transaction_history',
+    label: 'Tab Riwayat Transaksi Member',
+    category: 'loyalty',
+    description: 'Tampilkan riwayat kunjungan, struk transaksi, dan histori perolehan poin pelanggan.',
+    icon: 'receipt-outline',
+    defaultValue: true,
+  },
+];
+
 export const DEFAULT_FLAG_VALUES: Record<string, boolean> = {
   mobile_loyalty_card: true,
-  mobile_profile_nudge: true,
+  mobile_loyalty_redemption: true,
   mobile_branch_list: true,
+  mobile_happy_hour: true,
+  mobile_profile_nudge: true,
+  mobile_support_link: true,
   mobile_dark_mode: true,
+  mobile_transaction_history: true,
 };
 
 // Formatters
