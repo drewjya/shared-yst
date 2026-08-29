@@ -1,11 +1,10 @@
 export type LedgerKind = 'EARNED' | 'REDEEMED' | 'EXPIRED' | 'ADJUSTMENT' | 'PACKAGE_PURCHASE' | 'VOUCHER_REDEMPTION' | 'TRANSACTION';
 
-export type Gender = 'male' | 'female' | 'other';
-export const GENDERS: Gender[] = ['male', 'female', 'other'];
+export type Gender = 'male' | 'female';
+export const GENDERS: Gender[] = ['male', 'female'];
 export const GENDER_LABEL: Record<Gender, string> = {
   male: 'Male',
   female: 'Female',
-  other: 'Other',
 };
 export const ID_PHONE_HINT = 'Nomor telepon harus diawali dengan 08 atau +62 dan terdiri dari 10-14 digit.';
 
