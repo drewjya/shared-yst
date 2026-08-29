@@ -273,6 +273,14 @@ export interface User {
   pointsBalance?: number;
   createdAt?: string;
   updatedAt?: string;
+
+  // Soft delete & recovery metadata (30-day grace period)
+  deletedAt?: string | null;
+  deletedBy?: string | null;
+  deletedReason?: string | null;
+  daysRemaining?: number | null;
+  canRestore?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface Customer extends User {
