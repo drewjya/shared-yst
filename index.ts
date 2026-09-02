@@ -80,6 +80,32 @@ export interface PointSummary {
   };
 }
 
+export interface Additional {
+  id: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BranchAdditionalPricing {
+  id: string;
+  branchId: string;
+  additionalId: string;
+  price: number;
+  isAvailable: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BranchAdditionalItem extends Additional {
+  pricingId?: string | null;
+  isAvailable: boolean;
+}
+
 export interface CustomerVoucher {
   id: string;
   code: string;
@@ -88,7 +114,7 @@ export interface CustomerVoucher {
   userEmail?: string | null;
   userPhone?: string | null;
   rewardId: string;
-  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'VIP_ROOM';
+  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL' | 'VIP_ROOM';
   rewardName: string;
   imageUrl?: string | null;
   voucherValue: number;
@@ -100,6 +126,8 @@ export interface CustomerVoucher {
   treatmentName?: string | null;
   variantName?: string | null;
   duration?: number | null;
+  additionalId?: string | null;
+  additionalName?: string | null;
   status: 'ACTIVE' | 'USED' | 'EXPIRED';
   expiresAt?: string | null;
   usedAt?: string | null;
@@ -115,6 +143,9 @@ export interface CustomerPackageSession {
   treatmentName?: string | null;
   variantName?: string | null;
   duration?: number | null;
+  additionalId?: string | null;
+  additionalName?: string | null;
+  quantity?: number | null;
   status: 'UNUSED' | 'USED' | 'EXPIRED';
   usedAt?: string | null;
   usedBranchId?: string | null;
@@ -133,11 +164,15 @@ export interface CustomerPackage {
   treatmentId?: string | null;
   treatmentVariantId?: string | null;
   items?: Array<{
+    type?: 'treatment' | 'additional';
     treatmentId?: string;
     treatmentVariantId?: string;
     treatmentName?: string;
     variantName?: string;
     duration?: number;
+    additionalId?: string;
+    additionalName?: string;
+    quantity?: number;
     sessionCount?: number;
   }> | null;
   totalSessions: number;
@@ -159,7 +194,7 @@ export interface GiftVoucherReward {
   name: string;
   description?: string | null;
   imageUrl?: string | null;
-  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'VIP_ROOM';
+  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL' | 'VIP_ROOM';
   pointsRequired: number;
   voucherValue: number;
   branchId?: string | null;
@@ -169,6 +204,8 @@ export interface GiftVoucherReward {
   treatmentVariantId?: string | null;
   variantName?: string | null;
   duration?: number | null;
+  additionalId?: string | null;
+  additionalName?: string | null;
   isRedeemable: boolean;
   isIndefiniteExpiry: boolean;
   validDays?: number | null;
