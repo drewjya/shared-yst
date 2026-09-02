@@ -114,7 +114,7 @@ export interface CustomerVoucher {
   userEmail?: string | null;
   userPhone?: string | null;
   rewardId: string;
-  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL' | 'VIP_ROOM';
+  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL';
   rewardName: string;
   imageUrl?: string | null;
   voucherValue: number;
@@ -194,7 +194,7 @@ export interface GiftVoucherReward {
   name: string;
   description?: string | null;
   imageUrl?: string | null;
-  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL' | 'VIP_ROOM';
+  rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL';
   pointsRequired: number;
   voucherValue: number;
   branchId?: string | null;
