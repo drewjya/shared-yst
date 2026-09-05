@@ -330,6 +330,8 @@ export interface SystemSettings {
   csWhatsappNumber?: string | null;
   csWhatsappName?: string | null;
   csWhatsappGreeting?: string | null;
+  paymentFees?: PaymentFeesMap;
+  includeFeeInPoints?: boolean;
   updatedBy?: string | null;
   updatedAt?: string;
 }
