@@ -115,6 +115,9 @@ export interface CustomerVoucher {
   userPhone?: string | null;
   rewardId: string;
   rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL';
+  discountType?: 'FIXED' | 'PERCENTAGE';
+  discountPercent?: number | null;
+  maxDiscount?: number | null;
   rewardName: string;
   imageUrl?: string | null;
   voucherValue: number;
@@ -195,6 +198,9 @@ export interface GiftVoucherReward {
   description?: string | null;
   imageUrl?: string | null;
   rewardType: 'DISCOUNT_NOMINAL_ALL_BRANCH' | 'DISCOUNT_NOMINAL_SPECIFIC_BRANCH' | 'FREE_TREATMENT' | 'FREE_ADDITIONAL';
+  discountType?: 'FIXED' | 'PERCENTAGE';
+  discountPercent?: number | null;
+  maxDiscount?: number | null;
   pointsRequired: number;
   voucherValue: number;
   branchId?: string | null;
@@ -210,6 +216,25 @@ export interface GiftVoucherReward {
   isIndefiniteExpiry: boolean;
   validDays?: number | null;
   isArchived: boolean;
+}
+
+export interface CashierPromo {
+  id: string;
+  code: string;
+  name: string;
+  description?: string | null;
+  discountType: 'PERCENTAGE' | 'FIXED';
+  discountValue: number;
+  maxDiscount?: number | null;
+  minSpend: number;
+  requiresVerification: boolean;
+  verificationPlaceholder?: string | null;
+  branchId?: string | null;
+  branchName?: string | null;
+  isActive: boolean;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TreatmentPackageItem {
@@ -288,6 +313,11 @@ export interface Transaction {
     discountAmount?: number;
   }> | null;
   paymentFee?: number;
+  cashierPromoId?: string | null;
+  cashierPromoName?: string | null;
+  cashierPromoDiscount?: number;
+  cashierPromoNote?: string | null;
+  therapistName?: string | null;
   netPaidAmount: number;
   pointsEarned: number;
   paymentMethod: string;
