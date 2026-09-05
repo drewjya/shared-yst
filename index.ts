@@ -287,6 +287,7 @@ export interface Transaction {
     variantName?: string;
     discountAmount?: number;
   }> | null;
+  paymentFee?: number;
   netPaidAmount: number;
   pointsEarned: number;
   paymentMethod: string;
@@ -487,4 +488,34 @@ export function redeemProblem(points: number, rates = DEFAULT_RATES): string | n
   const step = rates.redeemPoints || 25;
   if (points % step !== 0) return `Poin harus kelipatan ${step}.`;
   return null;
+}
+
+// Payment Method Fees
+export type PaymentFeeType = 'percentage' | 'flat';
+
+export interface PaymentFeeConfig {
+  type: PaymentFeeType;
+  value: number; // For percentage: e.g. 1.5 for 1.5%. For flat: e.g. 2000 for Rp 2.000
+  enabled?: boolean;
+}
+
+export type PaymentFeesMap = Record<string, PaymentFeeConfig>;
+
+export const DEFAULT_PAYMENT_FEES: PaymentFeesMap = {
+  CASH: { type: 'flat', value: 0, enabled: false },
+  QRIS: { type: 'percentage', value: 0.7, enabled: false },
+  DEBIT: { type: 'flat', value: 0, enabled: false },
+  CREDIT: { type: 'percentage', value: 2.0, enabled: false },
+  TRANSFER: { type: 'flat', value: 0, enabled: false },
+};
+
+export function calculatePaymentFee(
+  baseAmount: number,
+  feeConfig?: PaymentFeeConfig | null
+): number {
+  if (!feeConfig || !feeConfig.enabled || baseAmount <= 0) return 0;
+  if (feeConfig.type === 'percentage') {
+    return Math.round((baseAmount * Number(feeConfig.value || 0)) / 100);
+  }
+  return Math.round(Number(feeConfig.value || 0));
 }
