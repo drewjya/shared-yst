@@ -551,3 +551,97 @@ export function calculatePaymentFee(
   }
   return Math.round(Number(feeConfig.value || 0));
 }
+
+/**
+ * Converts a Date object to YYYY-MM-DD string using local calendar time (avoids UTC timezone shift).
+ */
+export function formatISODate(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Safely parses YYYY-MM-DD string into a local Date object.
+ * Returns null if the string is not a valid date or contains nonexistent calendar days (e.g. Feb 30).
+ */
+export function parseISODate(str: string | null | undefined): Date | null {
+  if (!str || typeof str !== 'string') return null;
+  const trimmed = str.trim();
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
+  if (!match) return null;
+
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  const day = parseInt(match[3], 10);
+
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+/**
+ * Validates and sanitizes a birthday string (YYYY-MM-DD).
+ *
+ * Rules:
+ * 1. Must match YYYY-MM-DD format.
+ * 2. Must be a valid real calendar date.
+ * 3. Cannot be in the future.
+ * 4. Year must be at least 1900.
+ */
+export function sanitizeDateOfBirth(input: unknown): string | null {
+  if (!input || typeof input !== 'string') return null;
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  const parsed = parseISODate(trimmed);
+  if (!parsed) return null;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+  if (parsed.getTime() > today.getTime()) {
+    return null;
+  }
+
+  if (parsed.getFullYear() < 1900) {
+    return null;
+  }
+
+  return formatISODate(parsed);
+}
+
+const MONTHS_ID = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
+const MONTHS_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+/**
+ * Formats YYYY-MM-DD into a localized friendly display string, e.g. "25 Agustus 1995".
+ */
+export function formatDisplayDate(isoDate: string | null | undefined, locale: 'id' | 'en' = 'id'): string {
+  if (!isoDate) return '';
+  const parsed = parseISODate(isoDate);
+  if (!parsed) return isoDate;
+
+  const day = parsed.getDate();
+  const monthName = locale === 'id' ? MONTHS_ID[parsed.getMonth()] : MONTHS_EN[parsed.getMonth()];
+  const year = parsed.getFullYear();
+
+  return locale === 'id' ? `${day} ${monthName} ${year}` : `${monthName} ${day}, ${year}`;
+}
+
