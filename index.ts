@@ -323,6 +323,11 @@ export interface Transaction {
   paymentMethod: string;
   notes?: string | null;
   cashierName?: string | null;
+  isVoided?: boolean;
+  voidReason?: string | null;
+  voidedAt?: string | null;
+  voidedBy?: string | null;
+  voidedByName?: string | null;
   createdAt: string;
 }
 
