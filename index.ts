@@ -8,19 +8,146 @@ export const GENDER_LABEL: Record<Gender, string> = {
 };
 export const ID_PHONE_HINT = 'Nomor telepon harus diawali dengan 08 atau +62 dan terdiri dari 10-14 digit.';
 
-export function normalizePhoneID(input: string): string | null {
-  const clean = input.replace(/\D/g, '');
+export interface CountryDialCode {
+  name: string;
+  nameId: string;
+  nameZh: string;
+  dialCode: string; // e.g. "+62"
+  code: string;     // ISO 2-letter, e.g. "ID"
+  flag: string;     // emoji flag, e.g. "🇮🇩"
+}
+
+export const DEFAULT_COUNTRY_CODE = 'ID';
+export const DEFAULT_DIAL_CODE = '+62';
+
+export const COUNTRY_DIAL_CODES: CountryDialCode[] = [
+  { code: 'ID', dialCode: '+62', flag: '🇮🇩', name: 'Indonesia', nameId: 'Indonesia', nameZh: '印度尼西亚' },
+  { code: 'SG', dialCode: '+65', flag: '🇸🇬', name: 'Singapore', nameId: 'Singapura', nameZh: '新加坡' },
+  { code: 'MY', dialCode: '+60', flag: '🇲🇾', name: 'Malaysia', nameId: 'Malaysia', nameZh: '马来西亚' },
+  { code: 'CN', dialCode: '+86', flag: '🇨🇳', name: 'China', nameId: 'Tiongkok', nameZh: '中国' },
+  { code: 'HK', dialCode: '+852', flag: '🇭🇰', name: 'Hong Kong', nameId: 'Hong Kong', nameZh: '中国香港' },
+  { code: 'TW', dialCode: '+886', flag: '🇹🇼', name: 'Taiwan', nameId: 'Taiwan', nameZh: '中国台湾' },
+  { code: 'AU', dialCode: '+61', flag: '🇦🇺', name: 'Australia', nameId: 'Australia', nameZh: '澳大利亚' },
+  { code: 'US', dialCode: '+1', flag: '🇺🇸', name: 'United States', nameId: 'Amerika Serikat', nameZh: '美国' },
+  { code: 'GB', dialCode: '+44', flag: '🇬🇧', name: 'United Kingdom', nameId: 'Inggris', nameZh: '英国' },
+  { code: 'JP', dialCode: '+81', flag: '🇯🇵', name: 'Japan', nameId: 'Jepang', nameZh: '日本' },
+  { code: 'KR', dialCode: '+82', flag: '🇰🇷', name: 'South Korea', nameId: 'Korea Selatan', nameZh: '韩国' },
+  { code: 'TH', dialCode: '+66', flag: '🇹🇭', name: 'Thailand', nameId: 'Thailand', nameZh: '泰国' },
+  { code: 'VN', dialCode: '+84', flag: '🇻🇳', name: 'Vietnam', nameId: 'Vietnam', nameZh: '越南' },
+  { code: 'PH', dialCode: '+63', flag: '🇵🇭', name: 'Philippines', nameId: 'Filipina', nameZh: '菲律宾' },
+  { code: 'IN', dialCode: '+91', flag: '🇮🇳', name: 'India', nameId: 'India', nameZh: '印度' },
+  { code: 'DE', dialCode: '+49', flag: '🇩🇪', name: 'Germany', nameId: 'Jerman', nameZh: '德国' },
+  { code: 'FR', dialCode: '+33', flag: '🇫🇷', name: 'France', nameId: 'Prancis', nameZh: '法国' },
+  { code: 'NL', dialCode: '+31', flag: '🇳🇱', name: 'Netherlands', nameId: 'Belanda', nameZh: '荷兰' },
+  { code: 'CA', dialCode: '+1', flag: '🇨🇦', name: 'Canada', nameId: 'Kanada', nameZh: '加拿大' },
+  { code: 'AE', dialCode: '+971', flag: '🇦🇪', name: 'United Arab Emirates', nameId: 'Uni Emirat Arab', nameZh: '阿联酋' },
+  { code: 'SA', dialCode: '+966', flag: '🇸🇦', name: 'Saudi Arabia', nameId: 'Arab Saudi', nameZh: '沙特阿拉伯' },
+  { code: 'NZ', dialCode: '+64', flag: '🇳🇿', name: 'New Zealand', nameId: 'Selandia Baru', nameZh: '新西兰' },
+  { code: 'IT', dialCode: '+39', flag: '🇮🇹', name: 'Italy', nameId: 'Italia', nameZh: '意大利' },
+  { code: 'ES', dialCode: '+34', flag: '🇪🇸', name: 'Spain', nameId: 'Spanyol', nameZh: '西班牙' },
+  { code: 'CH', dialCode: '+41', flag: '🇨🇭', name: 'Switzerland', nameId: 'Swiss', nameZh: '瑞士' },
+  { code: 'MO', dialCode: '+853', flag: '🇲🇴', name: 'Macau', nameId: 'Makau', nameZh: '中国澳门' },
+  { code: 'BN', dialCode: '+673', flag: '🇧🇳', name: 'Brunei', nameId: 'Brunei', nameZh: '文莱' },
+  { code: 'KH', dialCode: '+855', flag: '🇰🇭', name: 'Cambodia', nameId: 'Kamboja', nameZh: '柬埔寨' },
+  { code: 'MM', dialCode: '+95', flag: '🇲🇲', name: 'Myanmar', nameId: 'Myanmar', nameZh: '缅甸' },
+  { code: 'LA', dialCode: '+856', flag: '🇱🇦', name: 'Laos', nameId: 'Laos', nameZh: '老挝' },
+  { code: 'QA', dialCode: '+974', flag: '🇶🇦', name: 'Qatar', nameId: 'Qatar', nameZh: '卡塔尔' },
+  { code: 'RU', dialCode: '+7', flag: '🇷🇺', name: 'Russia', nameId: 'Rusia', nameZh: '俄罗斯' },
+  { code: 'TR', dialCode: '+90', flag: '🇹🇷', name: 'Turkey', nameId: 'Turki', nameZh: '土耳其' },
+  { code: 'BR', dialCode: '+55', flag: '🇧🇷', name: 'Brazil', nameId: 'Brasil', nameZh: '巴西' },
+  { code: 'MX', dialCode: '+52', flag: '🇲🇽', name: 'Mexico', nameId: 'Meksiko', nameZh: '墨西哥' },
+  { code: 'ZA', dialCode: '+27', flag: '🇿🇦', name: 'South Africa', nameId: 'Afrika Selatan', nameZh: '南非' },
+];
+
+/**
+ * Normalizes a phone number into international E.164 format (+<dialCode><nationalDigits>).
+ * Supports both Indonesian numbers (with 08/8/62 shortcuts) and international numbers.
+ */
+export function normalizePhone(input: string, dialCode: string = DEFAULT_DIAL_CODE): string | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  // If input already has a leading '+', respect its dial code:
+  if (trimmed.startsWith('+')) {
+    const cleanDigits = trimmed.replace(/\D/g, '');
+    if (cleanDigits.length >= 7 && cleanDigits.length <= 15) {
+      return `+${cleanDigits}`;
+    }
+    return null;
+  }
+
+  const clean = trimmed.replace(/\D/g, '');
   if (!clean) return null;
-  if (clean.startsWith('62') && clean.length >= 10 && clean.length <= 15) {
-    return `+${clean}`;
+
+  // Normalized dial code digits without '+'
+  const cleanDialCode = dialCode.replace(/\D/g, '') || '62';
+
+  // If dialCode is Indonesia (+62):
+  if (cleanDialCode === '62') {
+    if (clean.startsWith('62') && clean.length >= 10 && clean.length <= 15) {
+      return `+${clean}`;
+    }
+    if (clean.startsWith('08') && clean.length >= 10 && clean.length <= 14) {
+      return `+62${clean.slice(1)}`;
+    }
+    if (clean.startsWith('8') && clean.length >= 9 && clean.length <= 13) {
+      return `+62${clean}`;
+    }
+    return null;
   }
-  if (clean.startsWith('08') && clean.length >= 10 && clean.length <= 14) {
-    return `+62${clean.slice(1)}`;
+
+  // For other countries:
+  // If user typed a leading 0 (common domestic trunk prefix like 04..., 07...), strip it
+  const nationalDigits = clean.startsWith('0') ? clean.slice(1) : clean;
+
+  // If user accidentally typed dial code prefix (e.g. "65..." when +65 is selected), avoid duplicate
+  const effectiveNational =
+    nationalDigits.startsWith(cleanDialCode) && nationalDigits.length > cleanDialCode.length + 4
+      ? nationalDigits.slice(cleanDialCode.length)
+      : nationalDigits;
+
+  const totalDigits = `${cleanDialCode}${effectiveNational}`;
+  if (totalDigits.length >= 7 && totalDigits.length <= 15) {
+    return `+${totalDigits}`;
   }
-  if (clean.startsWith('8') && clean.length >= 9 && clean.length <= 13) {
-    return `+62${clean}`;
-  }
+
   return null;
+}
+
+export function normalizePhoneID(input: string): string | null {
+  return normalizePhone(input, '+62');
+}
+
+/**
+ * Parses an existing full phone string into country and national number parts.
+ * Defaults to Indonesia (+62) if unparseable or without prefix.
+ */
+export function parsePhoneNumber(fullPhone?: string | null): { country: CountryDialCode; nationalNumber: string } {
+  const defaultCountry = COUNTRY_DIAL_CODES.find((c) => c.code === 'ID') || COUNTRY_DIAL_CODES[0];
+  if (!fullPhone) {
+    return { country: defaultCountry, nationalNumber: '' };
+  }
+  const trimmed = fullPhone.trim();
+  if (trimmed.startsWith('+')) {
+    // Sort by longest dial code first (e.g. +852 before +8)
+    const sorted = [...COUNTRY_DIAL_CODES].sort((a, b) => b.dialCode.length - a.dialCode.length);
+    for (const c of sorted) {
+      if (trimmed.startsWith(c.dialCode)) {
+        return { country: c, nationalNumber: trimmed.slice(c.dialCode.length).trim() };
+      }
+    }
+    const clean = trimmed.replace(/\D/g, '');
+    return { country: defaultCountry, nationalNumber: clean };
+  }
+
+  const clean = trimmed.replace(/\D/g, '');
+  if (clean.startsWith('08')) {
+    return { country: defaultCountry, nationalNumber: clean.slice(1) };
+  }
+  if (clean.startsWith('62')) {
+    return { country: defaultCountry, nationalNumber: clean.slice(2) };
+  }
+  return { country: defaultCountry, nationalNumber: clean };
 }
 
 export interface Branch {
